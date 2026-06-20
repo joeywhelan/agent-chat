@@ -1,0 +1,17 @@
+variable "elastic_cloud_api_key" {
+  description = "Elastic Cloud API key"
+  type        = string
+  sensitive   = true
+}
+
+variable "deployment_template_id" {
+  description = "Elastic Cloud deployment template"
+  type        = string
+  default     = "gcp-vector-search-optimized"
+}
+
+variable "region" {
+  description = "GCP region"
+  type        = string  
+  default     = "gcp-us-central1"
+}

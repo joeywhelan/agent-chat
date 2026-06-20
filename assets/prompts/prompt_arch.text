@@ -1,0 +1,94 @@
+Create a dark-theme technical architecture diagram for a GitHub README describing a demo that queries Elasticsearch with natural language via two different agent paths.
+
+This is a technical reference document, not an editorial cover image. It must be readable, precise, and self-explanatory. Every component should be labeled. Data flow must be shown with directed arrows.
+
+Format:
+- GitHub README inline image.
+- Horizontal composition, 3:2 aspect ratio (e.g. 1200x800).
+- Dark charcoal / near-black background (#0D1117 or similar).
+- Clean monospaced or sans-serif labels in white or light grey.
+- High contrast between components, arrows, and background.
+- Safe margins on all sides — no labels clipped at edges.
+- Crisp, vector-quality rendering. No photorealism. No gradients for their own sake.
+
+Components to include (label each one clearly):
+
+1. Developer / User
+   - Top-left or top-center entry point.
+   - Simple human icon or terminal glyph.
+   - Label: "Developer"
+
+2. Jupyter Notebook
+   - Sits just below the Developer node.
+   - Label: "Jupyter Notebook"
+   - Brief sub-label: "demo driver"
+   - Connect to Developer with a downward arrow.
+
+3. Terraform (provisioning path — shown as a side flow, not the main query path)
+   - Flows from Jupyter Notebook to the Elastic Cloud boundary.
+   - Label: "Terraform"
+   - Arrow labeled: "provision / destroy"
+   - Use a muted or dashed line to de-emphasize this as infrastructure plumbing rather than query data flow.
+
+4. Elastic Cloud Hosted (ECH) — draw as a containing boundary box
+   - Label the boundary: "Elastic Cloud Hosted" with a small Elastic logomark.
+   - Inside the boundary, place two sub-components:
+
+   4a. Elasticsearch Cluster
+       - Label: "Elasticsearch"
+       - Sub-label: "index: demo-ecommerce"
+       - Note: "semantic_text field (vector embeddings)"
+       - Use Elastic gold / coral accent color.
+
+   4b. Kibana
+       - Label: "Kibana"
+       - Sub-label: "Agent Builder"
+       - Use Elastic teal accent color.
+       - Connect Kibana to Elasticsearch with a bidirectional arrow inside the boundary.
+
+5. Synthetic Data Generator (Python / Faker)
+   - Sits between Jupyter Notebook and the Elasticsearch node.
+   - Label: "Data Generator"
+   - Sub-label: "Python · Faker · 5,000 orders"
+   - Arrow to Elasticsearch labeled: "bulk index"
+
+6. Query Path A — Kibana Agent Builder
+   - From Developer, a teal arrow flows into Kibana (Agent Builder).
+   - Label the arrow: "natural language prompt"
+   - From Kibana, a teal arrow flows to Elasticsearch.
+   - Label the arrow: "ES|QL query"
+   - From Elasticsearch, a return arrow flows back toward the Developer via Kibana.
+   - Label: "results"
+
+7. Claude Code + Agent Skills (Path B)
+   - Place this path on the opposite side of the diagram from the Kibana path.
+   - A box labeled "Claude Code" with a sub-label "elastic/agent-skills".
+   - Inside or adjacent to the Claude Code box, list the installed skills as small pill labels:
+     elasticsearch-esql · elasticsearch-authn · elasticsearch-authz · elasticsearch-audit · elasticsearch-file-ingest
+   - From Developer, a cyan arrow flows into Claude Code.
+   - Label the arrow: "natural language prompt"
+   - From Claude Code, a cyan arrow flows to Elasticsearch.
+   - Label the arrow: "ES|QL query"
+   - From Elasticsearch, a return arrow flows back toward the Developer via Claude Code.
+   - Label: "results"
+
+Style:
+- Dark technical aesthetic consistent with GitHub dark mode.
+- Elastic-inspired accent colors: teal (#00BFB3) for Kibana path, cyan (#07C) for Claude Code path, gold (#FEC514) and coral (#FF957D) for Elasticsearch internals.
+- Elastic "e" logomark on the ECH boundary box — small, tasteful, white or brand color.
+- Arrows should be clean, directional, and labeled. Use solid lines for query data flow, dashed lines for infrastructure/provisioning flow.
+- Component boxes: rounded rectangles with a subtle border glow matching their accent color.
+- No 3D, no isometric, no drop shadows heavier than a faint glow.
+- Minimal background texture: faint dot grid acceptable.
+
+Composition requirements:
+- The two query paths (Kibana and Claude Code) must be visually parallel and symmetric — same level of detail, same arrow style, distinguished only by color.
+- The ECH boundary box must clearly enclose both Elasticsearch and Kibana as a single managed platform.
+- Terraform provisioning must be visually subordinate — dashed line, muted color — so it does not distract from the query paths.
+- All labels must be legible at GitHub README display width (~800px rendered).
+- Do not add decorative elements that obscure the data flow.
+- Do not use a legend if the diagram is self-labeling.
+- Do not include marketing copy, bullet lists, or prose inside the diagram.
+
+Key message this diagram must communicate:
+"A Jupyter notebook drives two parallel natural-language-to-ES|QL query paths against the same Elasticsearch index: one through the Kibana Agent Builder GUI, one through Claude Code equipped with Elastic agent skills. Terraform provisions and tears down the Elastic Cloud environment."

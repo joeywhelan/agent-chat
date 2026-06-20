@@ -1,0 +1,65 @@
+Create a dark-theme technical section image illustrating Claude Code equipped with Elastic Agent Skills executing a natural language query against Elasticsearch.
+
+This is a compact inline section image for a technical article — not a cover, not a full architecture diagram. It should read clearly at article-column width (~700px) and communicate a single idea: a developer types a plain-English question into Claude Code, which uses installed Elastic agent skills to generate and run an ES|QL query against Elasticsearch.
+
+Format:
+- Horizontal banner composition, approximately 3:1 aspect ratio (e.g. 900x300).
+- Dark charcoal / near-black background (#0D1117 or similar).
+- Clean sans-serif or monospaced labels in white or light grey.
+- High contrast. Crisp, vector-quality rendering. No photorealism. No decorative gradients.
+- Safe margins on all sides — nothing clipped.
+
+Components to include (label each clearly):
+
+1. Natural language prompt
+   - Left side of the image.
+   - A terminal-style input line or dark command-prompt shape containing the text:
+       "Show me daily order volume for the last 90 days"
+   - Monospaced font, light color on dark background — implies a CLI input.
+   - Subtle cyan border or glow (#07C) to identify this as developer input.
+   - Label below: "natural language prompt"
+
+2. Claude Code box
+   - Center-left of the image.
+   - A rounded rectangle labeled "Claude Code" with a sub-label "elastic/agent-skills".
+   - Inside or below the label, show a compact vertical list of small pill-shaped skill labels in muted text:
+       elasticsearch-esql · elasticsearch-authn · kibana-dashboards · observability-logs-search
+   - Use cyan (#07C) as the accent color for the box border glow.
+   - An arrow enters from the left (the prompt) and exits to the right (toward Elasticsearch).
+
+3. Directed arrow: "ES|QL query"
+   - A solid horizontal cyan arrow from Claude Code toward the Elasticsearch node.
+   - Label above the arrow: "ES|QL query"
+   - Monospaced label styling.
+
+4. Elasticsearch node
+   - Right side of the image.
+   - A rounded rectangle or hexagonal cluster glyph.
+   - Label: "Elasticsearch"
+   - Sub-label: "demo-ecommerce"
+   - Use Elastic gold (#FEC514) as the accent color.
+   - A return arrow flows back left toward Claude Code, labeled: "results"
+
+5. Return arrow
+   - A dashed cyan arrow flowing back from Elasticsearch to Claude Code.
+   - Label: "results"
+   - Slightly muted — visually subordinate to the outbound query arrow.
+
+Style:
+- Dark technical aesthetic matching GitHub dark mode / terminal dark theme.
+- Accent colors: cyan (#07C) for the Claude Code / developer path, Elastic gold (#FEC514) for the Elasticsearch node.
+- Arrows: solid line for the outbound ES|QL query, dashed line for the return results.
+- Component boxes: rounded rectangles with a faint border glow matching their accent color.
+- No 3D, no isometric, no heavy drop shadows.
+- Optional faint dot-grid background texture — subtle only.
+
+Composition requirements:
+- Strict left-to-right flow: prompt → Claude Code (with skills) → Elasticsearch → results.
+- The skill pills inside or below the Claude Code box must be legible at 700px rendered width — keep font size adequate.
+- The Elasticsearch node on the right should feel like a live cluster, not a static database icon.
+- Do not show a full terminal window, browser chrome, or IDE sidebar — just the essential query flow.
+- Do not include marketing copy, prose, or bullet lists inside the image.
+- All labels legible at 700px rendered width.
+
+Key message this image must communicate:
+"Claude Code, armed with Elastic agent skills, accepts a plain-English question and autonomously generates and executes an ES|QL query against Elasticsearch — no manual query writing required."

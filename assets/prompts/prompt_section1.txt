@@ -1,0 +1,68 @@
+Create a dark-theme technical section image illustrating the Kibana Agent Builder chat interface converting a natural language question into an ES|QL query.
+
+This is a compact inline section image for a technical article — not a cover, not a full architecture diagram. It should read clearly at article-column width (~700px) and communicate a single idea: a user types a plain-English question into the Kibana Agent Chat UI and receives an ES|QL query and result.
+
+Format:
+- Horizontal banner composition, approximately 3:1 aspect ratio (e.g. 900x300).
+- Dark charcoal / near-black background (#0D1117 or similar).
+- Clean sans-serif or monospaced labels in white or light grey.
+- High contrast. Crisp, vector-quality rendering. No photorealism. No decorative gradients.
+- Safe margins on all sides — nothing clipped.
+
+Components to include (label each clearly):
+
+1. Natural language input
+   - Left side of the image.
+   - A soft speech-bubble or chat-message shape containing the text:
+       "What are the top 5 product categories by total revenue?"
+   - Rendered in a light, readable font — as if typed into a chat box.
+   - Subtle teal border or glow (#00BFB3) to identify this as user input.
+   - Label below or beside: "natural language prompt"
+
+2. Directed arrow: "Agent Builder"
+   - A solid horizontal arrow from the input bubble toward the center panel.
+   - Label above the arrow: "Kibana Agent Builder"
+   - Use Elastic teal (#00BFB3) as the arrow color.
+
+3. ES|QL query output panel
+   - Center of the image.
+   - A dark monospaced code block or terminal-style panel showing a compact ES|QL snippet:
+       FROM ecommerce
+       | STATS revenue = SUM(unit_price * quantity)
+           BY product_category
+       | SORT revenue DESC
+       | LIMIT 5
+   - Teal or cyan syntax highlighting on keywords (FROM, STATS, SORT, LIMIT).
+   - Subtle rounded-rectangle border with a faint teal glow.
+   - Label above the panel: "ES|QL"
+
+4. Directed arrow: results
+   - A short arrow flowing rightward from the ES|QL panel.
+   - Label: "query results"
+   - Muted color — visually subordinate.
+
+5. Results indicator
+   - Right side of the image.
+   - A minimal abstract bar chart or table glyph — 3-5 horizontal bars of varying length in Elastic gold (#FEC514).
+   - Implies aggregated result data returning to the user.
+   - No actual numbers or labels needed — abstract form only.
+   - Label below: "aggregated results"
+
+Style:
+- Dark technical aesthetic matching GitHub dark mode / Kibana dark theme.
+- Accent colors: teal (#00BFB3) for the Agent Builder path, gold (#FEC514) for result data, muted grey for secondary labels.
+- Arrows: solid lines, clean and directional.
+- Component boxes: rounded rectangles with a faint border glow matching their accent color.
+- No 3D, no isometric, no heavy drop shadows.
+- Optional faint dot-grid background texture — subtle only.
+
+Composition requirements:
+- Strict left-to-right flow: natural language → Agent Builder → ES|QL → results.
+- The ES|QL code block must be legible — use a large enough font size that the keywords are readable at 700px rendered width.
+- The result glyph on the right should be clearly abstract (not a real chart), implying data without showing actual values.
+- Do not show a full browser chrome or Kibana sidebar — just the essential chat-to-query flow.
+- Do not include marketing copy, prose, or bullet lists inside the image.
+- All labels legible at 700px rendered width.
+
+Key message this image must communicate:
+"The Kibana Agent Builder accepts a plain-English question and returns a live ES|QL query with aggregated results — no query syntax required."

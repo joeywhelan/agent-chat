@@ -1,0 +1,65 @@
+Create a stylish dark-theme cover image for a LinkedIn article about querying Elasticsearch with natural language using Elastic Agent Builder and Claude Code agent skills.
+
+This should be an editorial cover image, not an architecture diagram. The core message is that plain English questions can drive live Elasticsearch queries through two distinct channels — a Kibana GUI agent and an AI coding assistant armed with Elastic agent skills — and both paths produce the same idiomatic ES|QL.
+
+Format:
+- LinkedIn article cover image.
+- Wide horizontal composition, 16:9.
+- Dark charcoal / near-black background.
+- Clean, modern, high-contrast design.
+- Leave safe margins on all sides so nothing is cropped.
+- No dense text, no code blocks, no formulas, no tables.
+
+Main visual concept:
+A split-but-unified composition showing two paths from the same natural language input to the same Elasticsearch data layer.
+
+Left side: "Kibana Agent Builder"
+- A soft, browser-chrome-like glow representing the Kibana GUI.
+- A single clean light beam in Elastic teal flows from a faint speech-bubble or language glyph downward toward the center data layer.
+- Calm, visual, approachable styling — implies a no-code GUI experience.
+- Subtle Kibana purple-to-teal gradient accent.
+
+Right side: "Claude Code + Agent Skills"
+- A terminal-like dark panel glow in cool cyan.
+- A clean light beam in cyan flows from a faint command-prompt or waveform glyph downward toward the same center data layer.
+- Precise, agentic, developer-facing styling — implies an IDE or CLI experience.
+- Subtle cyan-to-magenta gradient accent.
+
+Center bottom: "Elasticsearch data layer"
+- Where both beams converge: an abstract cluster of glowing hexagonal shards in Elastic gold and coral.
+- The shards pulse faintly, implying live query results returning upward.
+- The visual should feel like two inputs, one substrate — unified by Elasticsearch.
+
+Center top:
+- A minimal abstract glyph representing natural language: a soft speech arc, waveform, or text cursor — not a word balloon, not a photograph.
+- Both left and right beams originate from this shared source, implying the same question driving both paths.
+
+Optional title text, large and readable:
+"Ask in Plain English."
+
+Optional subtitle:
+"Elastic Agent Builder · Claude Code · ES|QL"
+
+Style:
+- Dark technical editorial aesthetic.
+- Elastic-inspired accent colors: teal, cyan, gold, coral, magenta.
+- Use Elastic brand marks sparingly and tastefully — a small Elastic logomark near one corner only.
+- Crisp vector-like geometry.
+- Smooth glow and bloom effects on the light beams.
+- Premium conference-keynote slide quality.
+- Minimal background texture: faint dot grid or soft circuit traces only.
+- Use negative space generously to keep the composition breathable and readable in a feed thumbnail.
+
+Composition requirements:
+- Do not create a full architecture diagram or system-flow chart.
+- Do not show boxes labeled "Kibana", "Claude", or "Elasticsearch" — let color and form carry the meaning.
+- Do not include screenshots, browser windows, or photorealistic UI.
+- Do not include code snippets or ES|QL text.
+- Do not include metrics tables, formulas, or bullet lists.
+- Do not include photorealistic people.
+- Do not use 3D isometric clutter.
+- Do not crop any text or visual elements at the frame edge.
+- Keep the design readable in a LinkedIn feed preview at small size.
+
+Key message:
+"Natural language is now a first-class interface to Elasticsearch — whether you reach it through a Kibana GUI agent or a Claude Code session wired with Elastic agent skills, plain English questions produce live, idiomatic ES|QL."
