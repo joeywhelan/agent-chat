@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ask in English, Query in ES|QL — Elastic</title>
+<style>
+  :root {
+    --ink:        #0B0D11;
+    --panel:      #16191F;
+    --panel-2:    #1C2027;
+    --border:     #2A2F3A;
+    --text:       #E8EAED;
+    --muted:      #98A2B3;
+    --teal:       #00BFB3;
+    --blue:       #1BA9F5;
+    --gold:       #FEC514;
+    --pink:       #F04E98;
+    --coral:      #FF957D;
+    --footer-h:   72px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: var(--ink);
+    color: var(--text);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  code, pre, .mono {
+    font-family: "SF Mono", "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
+  }
+
+  /* ---------- Deck + slides ---------- */
+  .deck { position: fixed; inset: 0; }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 56px 72px calc(var(--footer-h) + 28px);
+    overflow-y: auto;
+    animation: fade .35s ease;
+  }
+  .slide.active { display: flex; }
+
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .slide-inner {
+    width: 100%;
+    max-width: 1120px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+  }
+
+  /* ---------- Typography ---------- */
+  h1 { font-size: clamp(30px, 4.6vw, 58px); line-height: 1.08; margin: 0; font-weight: 800; letter-spacing: -0.02em; }
+  h2 { font-size: clamp(24px, 3.2vw, 40px); line-height: 1.12; margin: 0; font-weight: 750; letter-spacing: -0.01em; }
+  h3 { font-size: clamp(16px, 1.7vw, 22px); margin: 0; font-weight: 650; color: var(--teal); }
+  p  { font-size: clamp(15px, 1.5vw, 20px); line-height: 1.5; margin: 0; color: var(--muted); }
+  .lead { color: var(--text); max-width: 60ch; }
+
+  .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--teal);
+  }
+
+  .accent-blue { color: var(--blue); }
+  .accent-gold { color: var(--gold); }
+  .accent-pink { color: var(--pink); }
+  .accent-teal { color: var(--teal); }
+
+  .gradient-text {
+    background: linear-gradient(100deg, var(--teal), var(--blue) 55%, var(--pink));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* ---------- Images ---------- */
+  .shot {
+    max-width: 100%;
+    max-height: 56vh;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 24px 60px rgba(0,0,0,.55);
+    object-fit: contain;
+  }
+  .shot.tall { max-height: 60vh; }
+  .img-row { display: flex; gap: 20px; align-items: center; justify-content: center; flex-wrap: wrap; width: 100%; }
+  .img-row .shot { max-height: 46vh; }
+
+  /* ---------- Cards / grids ---------- */
+  .grid { display: grid; gap: 18px; width: 100%; }
+  .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .card .card-h { font-size: clamp(16px, 1.7vw, 21px); font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 10px; }
+  .card p { font-size: clamp(13px, 1.35vw, 17px); }
+  .card.teal { border-top: 3px solid var(--teal); }
+  .card.blue { border-top: 3px solid var(--blue); }
+  .card.gold { border-top: 3px solid var(--gold); }
+  .card.pink { border-top: 3px solid var(--pink); }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: none; }
+
+  ul.bullets { text-align: left; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 800px; }
+  ul.bullets li { display: flex; gap: 14px; align-items: flex-start; font-size: clamp(15px, 1.5vw, 20px); line-height: 1.45; color: var(--text); }
+  ul.bullets li .mk { color: var(--teal); font-weight: 800; flex: none; line-height: 1.45; }
+  ul.bullets li span.t { color: var(--muted); }
+  ul.bullets li b { color: var(--text); font-weight: 650; }
+
+  pre.code {
+    background: #0E1116;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    text-align: left;
+    font-size: clamp(12px, 1.25vw, 16px);
+    line-height: 1.55;
+    overflow-x: auto;
+    width: 100%;
+    color: #C9D1D9;
+  }
+  pre.code .k { color: var(--teal); }
+  pre.code .f { color: var(--gold); }
+  pre.code .s { color: var(--coral); }
+  pre.code .c { color: var(--muted); }
+
+  .quote {
+    font-size: clamp(17px, 2vw, 26px);
+    font-style: italic;
+    color: var(--text);
+    max-width: 30ch;
+  }
+  .quote::before { content: "“"; color: var(--teal); }
+  .quote::after  { content: "”"; color: var(--teal); }
+
+  .pill-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .pill {
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 13px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 7px 13px;
+    border-radius: 999px;
+  }
+  .pill.on { color: var(--teal); border-color: var(--teal); }
+
+  .meta-row { display: flex; gap: 14px; align-items: center; justify-content: center; color: var(--muted); font-size: clamp(14px,1.4vw,18px); flex-wrap: wrap; }
+  .meta-row .sep { color: var(--border); }
+
+  /* ---------- Elastic logo mark ---------- */
+  .elastic-mark { display: inline-flex; gap: 4px; align-items: center; }
+  .elastic-mark .bar { width: 9px; height: 26px; border-radius: 3px; }
+
+  /* ---------- Footer controls ---------- */
+  .footer {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    height: var(--footer-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 26px;
+    background: linear-gradient(to top, rgba(11,13,17,.96), rgba(11,13,17,.6));
+    border-top: 1px solid var(--border);
+    z-index: 50;
+    backdrop-filter: blur(6px);
+  }
+  .footer .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px; color: var(--muted); }
+  .footer .brand .elastic-mark .bar { width: 6px; height: 17px; }
+
+  .nav { display: flex; align-items: center; gap: 10px; }
+  .btn {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all .15s ease;
+  }
+  .btn:hover { border-color: var(--teal); color: var(--teal); }
+  .btn:disabled { opacity: .3; cursor: default; }
+  .counter { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 14px; min-width: 56px; text-align: center; }
+
+  /* progress bar */
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--teal), var(--blue), var(--pink)); z-index: 60; transition: width .35s ease; }
+
+  .hint { position: fixed; bottom: calc(var(--footer-h) + 10px); left: 50%; transform: translateX(-50%); color: var(--muted); font-size: 12px; opacity: .6; z-index: 40; pointer-events: none; }
+
+  @media (max-width: 720px) {
+    .slide { padding: 40px 24px calc(var(--footer-h) + 20px); }
+    .grid.cols-2, .grid.cols-3 { grid-template-columns: 1fr; }
+    .footer .brand span.full { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="deck" id="deck">
+
+  <!-- 1 — TITLE -->
+  <section class="slide active">
+    <div class="slide-inner">
+      <div class="elastic-mark" style="margin-bottom:6px">
+        <span class="bar" style="background:var(--teal)"></span>
+        <span class="bar" style="background:var(--blue)"></span>
+        <span class="bar" style="background:var(--gold)"></span>
+        <span class="bar" style="background:var(--pink)"></span>
+      </div>
+      <div class="kicker">Elastic · Natural Language Querying</div>
+      <h1>Ask in English,<br><span class="gradient-text">Query in ES|QL</span></h1>
+      <p class="lead">Two interfaces, one Elasticsearch index — the Kibana Agent Builder GUI and Claude Code with Elastic agent skills, both turning plain English into live ES|QL.</p>
+      <div class="meta-row" style="margin-top:8px">
+        <span>Solutions Architecture</span>
+        <span class="sep">|</span>
+        <span>Engineering Briefing</span>
+        <span class="sep">|</span>
+        <span class="accent-teal">Live Demo</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 — THE CHALLENGE -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="kicker">The Challenge</div>
+      <h2>ES|QL is powerful — but it's still a language to learn</h2>
+      <div class="grid cols-3" style="margin-top:8px">
+        <div class="card teal">
+          <div class="card-h"><span class="dot" style="background:var(--teal)"></span>Syntax overhead</div>
+          <p>Analysts know the question they want answered, not the <span class="mono">STATS … BY … | SORT</span> pipeline that answers it.</p>
+        </div>
+        <div class="card blue">
+          <div class="card-h"><span class="dot" style="background:var(--blue)"></span>Schema knowledge</div>
+          <p>Correct queries require knowing field names, types, and which fields support semantic vs. full-text search.</p>
+        </div>
+        <div class="card pink">
+          <div class="card-h"><span class="dot" style="background:var(--pink)"></span>Context switching</div>
+          <p>Developers want answers inside their existing workflow — the browser or the terminal — not a new tool.</p>
+        </div>
+      </div>
+      <p class="lead" style="margin-top:8px">Natural language is becoming a first-class interface to Elasticsearch. This session shows <b class="accent-teal">two production-ready paths</b> to get there.</p>
+    </div>
+  </section>
+
+  <!-- 3 — AGENDA / TWO PATHS -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="kicker">What We'll Cover</div>
+      <h2>Same question. Same index. Two paths.</h2>
+      <div class="grid cols-2" style="margin-top:10px">
+        <div class="card teal">
+          <div class="card-h"><span class="dot" style="background:var(--teal)"></span>Path A — Kibana Agent Builder</div>
+          <p>A no-code GUI agent. Type a question in the browser; get back ES|QL, results, and even full dashboards.</p>
+        </div>
+        <div class="card blue">
+          <div class="card-h"><span class="dot" style="background:var(--blue)"></span>Path B — Elastic Agent Skills</div>
+          <p>Official, open-source skills that inject ES|QL expertise into <b>any</b> compatible agent. We demo them in Claude Code.</p>
+        </div>
+      </div>
+      <ul class="bullets" style="margin-top:6px; max-width:760px">
+        <li><span class="mk">›</span><span class="t">Provision an Elastic Cloud Hosted deployment with Terraform</span></li>
+        <li><span class="mk">›</span><span class="t">Generate a synthetic e-commerce dataset with a <b>semantic_text</b> field</span></li>
+        <li><span class="mk">›</span><span class="t">Run identical-intent queries through both paths and compare</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 4 — ARCHITECTURE -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="kicker">Architecture</div>
+      <h2>One notebook drives both query paths</h2>
+      <img class="shot tall" src="assets/images/arch.png" alt="High-level architecture diagram">
+    </div>
+  </section>
+
+  <!-- 5 — PROVISIONING -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="kicker">Section 0 · Setup</div>
+      <h2>Provisioning with Terraform</h2>
+      <img class="shot" src="assets/images/section0.png" alt="ECH provisioning diagram" style="max-height:38vh">
+      <p class="lead">A 3-node Elastic Cloud Hosted deployment, provisioned as code. Credentials are written to a local <span class="mono">.env</span> file and loaded by Python — <b class="accent-teal">no secrets committed to source control</b>.</p>
+    </div>
+  </section>
+
+  <!-- 6 — DATASET -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="kicker">The Demo Dataset</div>
+      <h2>5,000 synthetic e-commerce orders</h2>
+      <div class="grid cols-2" style="margin-top:6px">
+        <div class="card gold">
+          <div class="card-h"><span class="dot" style="background:var(--gold)"></span>Realistic structure</div>
+          <p>Orders, customers, regions, categories, prices, statuses — enough shape for aggregation, time-series, and ranking queries.</p>
+        </div>
+        <div class="card teal">
+          <div class="card-h"><span class="dot" style="background:var(--teal)"></span>semantic_text field</div>
+          <p><span class="mono">product_description</span> is mapped as <b>semantic_text</b>, so descriptions carry vector embeddings — enabling meaning-based search out of the box.</p>
+        </div>
+      </div>
+      <pre class="code"><span class="k">"mappings"</span>: { <span class="k">"properties"</span>: {
+  <span class="k">"order_id"</span>:            { <span class="k">"type"</span>: <span class="s">"keyword"</span> },
+  <span class="k">"customer_id"</span>:         { <span class="k">"type"</span>: <span class="s">"keyword"</span> },
+  <span class="k">"customer_name"</span>:       { <span class="k">"type"</span>: <span class="s">"text"</span> },
+  <span class="k">"customer_region"</span>:     { <span class="k">"type"</span>: <span class="s">"keyword"</span> },
+  <span class="k">"order_date"</span>:          { <span class="k">"type"</span>: <span class="s">"date"</span> },
+  <span class="k">"status"</span>:              { <span class="k">"type"</span>: <span class="s">"keyword"</span> },
+  <span class="k">"product_category"</span>:    { <span class="k">"type"</span>: <span class="s">"keyword"</span> },
+  <span class="k">"product_name"</span>:        { <span class="k">"type"</span>: <span class="s">"text"</span> },
+  <span class="k">"product_description"</span>: { <span class="k">"type"</span>: <span class="f">"semantic_text"</span> },   <span class="c">// vector embeddings</span>
+  <span class="k">"unit_price"</span>:          { <span class="k">"type"</span>: <span class="s">"float"</span> },
+  <span class="k">"quantity"</span>:            { <span class="k">"type"</span>: <span class="s">"integer"</span> },
+  <span class="k">"total_amount"</span>:        { <span class="k">"type"</span>: <span class="s">"float"</span> },
+  <span class="k">"payment_method"</span>:      { <span class="k">"type"</span>: <span class="s">"keyword"</span> }
+}}
+    </div>
+  </section>
+
+  <!-- 7 — PATH A INTRO -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="kicker">Path A · No-Code GUI</div>
+      <h2>Kibana <span class="accent-teal">Agent Builder</span></h2>
+      <img class="shot" src="assets/images/section1.png" alt="Kibana Agent Chat" style="max-height:40vh">
+      <p class="lead">Open Agent Chat in Kibana, point it at the <span class="mono">demo-ecommerce</span> index, and ask in plain English. The agent reads the schema and grounds every query in real field names — <b class="accent-teal">no mapping knowledge required</b>.</p>
+    </div>
+  </section>
+
+  <!-- 8 — AGENT BUILDER: AGGREGATION -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="kicker">Agent Builder · Aggregation</div>
+      <h3>“What are the top 5 product categories by total revenue?”</h3>
+      <img class="shot tall" src="assets/screenshots/query1_1.png" alt="Top categories by revenue">
+      <p>Standard aggregation — the agent produces a clean <span class="mono accent-teal">STATS · SORT · LIMIT</span> pipeline.</p>
+    </div>
+  </section>
+
+  <!-- 9 — AGENT BUILDER: MULTI-DIMENSION -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="kicker">Agent Builder · Grouped Aggregation</div>
+      <h3>“Which regions have the highest average order value, broken down by order status?”</h3>
+      <img class="shot tall" src="assets/screenshots/query1_3.png" alt="Regions by order status">
+      <p>Two-dimension grouping inferred directly from the question — region × status.</p>
+    </div>
+  </section>
+
+  <!-- 10 — AGENT BUILDER: DASHBOARD -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="kicker">Agent Builder · Dashboard Generation</div>
+      <h3>“Build me a Kibana dashboard with revenue, trend, status &amp; region panels”</h3>
+      <div class="img-row">
+        <img class="shot" src="assets/screenshots/query1_5.png" alt="Dashboard request">
+        <img class="shot" src="assets/screenshots/query1_5b.png" alt="Generated Kibana dashboard">
+      </div>
+      <p>Beyond queries — a single request builds a <b class="accent-teal">multi-panel Lens dashboard</b>, bypassing ES|QL entirely.</p>
+    </div>
+  </section>
+
+  <!-- 11 — PATH B INTRO -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="kicker">Path B · Developer-Native CLI</div>
+      <h2>Claude Code + <span class="accent-blue">Elastic Agent Skills</span></h2>
+      <img class="shot" src="assets/images/section2.png" alt="Agent Skills with Claude Code" style="max-height:38vh">
+      <p class="lead">Official, open-source Elastic skills install with one command and equip Claude Code to write idiomatic ES|QL — right inside the terminal where developers already work.</p>
+    </div>
+  </section>
+
+  <!-- 12 — HOW SKILLS WORK -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="kicker">How Agent Skills Work</div>
+      <h2>Expertise as injected context — not an API call</h2>
+      <pre class="code"><span class="c">$ npx skills add elastic/agent-skills --claude</span>
+<span class="c"># installs self-contained SKILL.md packages</span></pre>
+      <div class="pill-row" style="margin-top:4px">
+        <span class="pill on">elasticsearch-esql</span>
+        <span class="pill on">elasticsearch-authn</span>
+        <span class="pill on">elasticsearch-authz</span>
+        <span class="pill">kibana-dashboards</span>
+        <span class="pill">observability-logs-search</span>
+        <span class="pill">+ 30 more</span>
+      </div>
+      <p class="lead" style="margin-top:8px">Each skill is a <span class="mono">SKILL.md</span> file. Its <b class="accent-teal">description</b> is the trigger — the agent reads it to decide when to activate. The quality comes from Elastic-authored ES|QL patterns baked into the instructions, <b>not</b> an external service.</p>
+    </div>
+  </section>
+
+  <!-- 13 — CLAUDE CODE IN ACTION -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="kicker">Claude Code · Semantic vs. Full-Text</div>
+      <h2>The skill picks the right retrieval method</h2>
+      <div class="grid cols-2" style="margin-top:6px">
+        <div class="card teal">
+          <div class="card-h"><span class="dot" style="background:var(--teal)"></span>Semantic search</div>
+          <p>“Products for fitness &amp; recovery, regardless of category” → vector search on <span class="mono">semantic_text</span>, spanning Sports, Electronics &amp; Clothing.</p>
+        </div>
+        <div class="card gold">
+          <div class="card-h"><span class="dot" style="background:var(--gold)"></span>Full-text MATCH</div>
+          <p>“Descriptions mentioning ‘wireless’ or ‘bluetooth’” → keyword <span class="mono">MATCH</span> with boolean OR, then aggregated.</p>
+        </div>
+      </div>
+      <pre class="code"><span class="k">FROM</span> demo-ecommerce
+<span class="k">| STATS</span> total = <span class="f">COUNT</span>(*), returned = <span class="f">COUNT</span>(*) <span class="k">WHERE</span> status == <span class="s">"returned"</span> <span class="k">BY</span> product_category
+<span class="k">| EVAL</span> return_rate_pct = <span class="f">ROUND</span>(100.0 * returned / total, 2)
+<span class="k">| SORT</span> return_rate_pct <span class="k">DESC</span></pre>
+      <p>Two-pass aggregation in a single pipeline — the same intent, expressed in plain English.</p>
+    </div>
+  </section>
+
+  <!-- 14 — CHOOSING A PATH -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="kicker">Choosing a Path</div>
+      <h2>Both reach idiomatic ES|QL — pick by where you work</h2>
+      <div class="grid cols-2" style="margin-top:10px">
+        <div class="card teal">
+          <div class="card-h"><span class="dot" style="background:var(--teal)"></span>Reach for Agent Builder when…</div>
+          <p>You want a quick, shareable answer or a dashboard without leaving the browser. Ideal for analysts and ad-hoc exploration.</p>
+        </div>
+        <div class="card blue">
+          <div class="card-h"><span class="dot" style="background:var(--blue)"></span>Reach for Agent Skills when…</div>
+          <p>You're working in a coding agent or terminal, need the query embedded in code, or want to chain results into a larger automated workflow.</p>
+        </div>
+      </div>
+      <p class="lead" style="margin-top:8px">Neither requires the user to know ES|QL syntax or the index mapping — the agent grounds itself in the live schema either way.</p>
+    </div>
+  </section>
+
+  <!-- 15 — TAKEAWAYS -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="kicker">Key Takeaways</div>
+      <h2 class="gradient-text">Natural language is now a first-class interface</h2>
+      <ul class="bullets" style="margin-top:6px">
+        <li><span class="mk">✓</span><span class="t"><b>Out-of-the-box</b> — Elasticsearch supports NL querying natively; no custom model training.</span></li>
+        <li><span class="mk">✓</span><span class="t"><b>Schema-grounded</b> — agents read the mapping and recognize <span class="mono">semantic_text</span> for meaning-based search.</span></li>
+        <li><span class="mk">✓</span><span class="t"><b>Two delivery models</b> — a Kibana GUI for analysts, agent skills for developers.</span></li>
+        <li><span class="mk">✓</span><span class="t"><b>Open &amp; portable</b> — Elastic agent skills are open-source and drop into the agent platform of your choice.</span></li>
+      </ul>
+      <div class="meta-row" style="margin-top:14px">
+        <span class="mono accent-teal">github.com/joeywhelan/agent-chat</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="hint" id="hint">← / → to navigate</div>
+
+<div class="footer">
+  <div class="brand">
+    <span class="elastic-mark">
+      <span class="bar" style="background:var(--teal)"></span>
+      <span class="bar" style="background:var(--blue)"></span>
+      <span class="bar" style="background:var(--gold)"></span>
+      <span class="bar" style="background:var(--pink)"></span>
+    </span>
+    <span class="full">elastic</span>
+  </div>
+  <div class="nav">
+    <button class="btn" id="prev" aria-label="Previous slide">‹</button>
+    <span class="counter" id="counter">1 / 15</span>
+    <button class="btn" id="next" aria-label="Next slide">›</button>
+  </div>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let idx = 0;
+
+  const counter  = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+  const prevBtn  = document.getElementById('prev');
+  const nextBtn  = document.getElementById('next');
+  const hint     = document.getElementById('hint');
+
+  function show(n) {
+    idx = Math.max(0, Math.min(total - 1, n));
+    slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+    counter.textContent = (idx + 1) + ' / ' + total;
+    progress.style.width = ((idx + 1) / total * 100) + '%';
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === total - 1;
+    // reset scroll on the active slide
+    slides[idx].scrollTop = 0;
+  }
+
+  function nextSlide() { show(idx + 1); }
+  function prevSlide() { show(idx - 1); }
+
+  nextBtn.addEventListener('click', nextSlide);
+  prevBtn.addEventListener('click', prevSlide);
+
+  document.addEventListener('keydown', (e) => {
+    if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); nextSlide(); }
+    else if (['ArrowLeft', 'PageUp'].includes(e.key))     { e.preventDefault(); prevSlide(); }
+    else if (e.key === 'Home') { show(0); }
+    else if (e.key === 'End')  { show(total - 1); }
+  });
+
+  // hide the hint after first interaction
+  let hinted = false;
+  function dropHint() { if (!hinted) { hint.style.transition = 'opacity .5s'; hint.style.opacity = '0'; hinted = true; } }
+  document.addEventListener('keydown', dropHint, { once: true });
+  document.addEventListener('click', dropHint, { once: true });
+  setTimeout(dropHint, 5000);
+
+  show(0);
+</script>
+</body>
+</html>
